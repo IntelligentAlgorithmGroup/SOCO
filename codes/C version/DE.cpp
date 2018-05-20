@@ -3,6 +3,7 @@
 #include <iostream>
 using namespace std;
 
+void my_test(double *, double *, int, int, int);
 void DE(int);
 int get_one(int, int, int);
 double _fi(int, int, int);
@@ -145,4 +146,14 @@ double _cri(int i) {
         cri = crl + (cru - crl) * ((f[i]-f_min)/(f_max-f_min));
     }
     return cri;
+}
+
+void my_test(double *x, double *f, int nx, int mx, int func_num) {
+    for (int i = 0; i < mx; i++) {
+        int tmp = 0;
+        for (int j = 0; j < nx; j++) {
+            tmp += x[j] * pow(-2, j);
+        }
+        f[i] = tmp;
+    }
 }

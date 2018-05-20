@@ -11,7 +11,7 @@
 #include <malloc.h>
 #include <random>
 
-
+void my_test(double *, double *, int, int, int);
 void DE(double *, double *, int, int, int);
 int get_one(int, int, int, int);
 double _fi(double *,int, int, int);
@@ -26,7 +26,7 @@ int _nx = 10;
 double x[500];*/
 double _min = -100;
 double _max = 100;
-int iter_times = 10000;
+int iter_times = 1000;
 double F = 0.5;
 double h[500]; //mutate
 double cr = 0.8;
@@ -50,11 +50,12 @@ int main()
 	double *f,*x;
 	FILE *fpt;
 	char FileName[30];
-	m=50;
+	m=10;
 	n=10;
 	x=(double *)malloc(m*n*sizeof(double));
 	f=(double *)malloc(sizeof(double)  *  m);
-	for (i = 0; i < 30; i++)
+
+	/*for (i = 0; i < 30; i++)
 	{
 		func_num=i+1;
 		sprintf(FileName, "input_data/shift_data_%d.txt", func_num);
@@ -98,14 +99,15 @@ int main()
 		printf("target\n");
 		DE(x, f, m, n, func_num);
 		printf("end\n");
-	}
+	/*}
 	free(x);
 	free(f);
 	free(y);
 	free(z);
 	free(M);
 	free(OShift);
-	free(x_bound);
+	free(x_bound);*/
+    system("pause");
 	return 0;
 }
 
@@ -113,14 +115,15 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
     //(1)种群初始化
     for (int i = 0; i < _mx; i++) {
         for (int j = 0; j < _nx; j++) {
-            x[i*_mx+j] = _min + (rand()%100/(double)101) * (_max - _min);
+            x[i*_nx+j] = _min + (rand()%100/(double)101) * (_max - _min);
         }
     }
     
-	printf("begin the %d func", _funcnum);
+	printf("begin the %d func\n", _funcnum);
 
     for (int g = 0; g < iter_times; g++) {
-        cec17_test_func(x, f, _nx, _mx, _funcnum);
+        my_test(x, f, _nx, _mx, _funcnum);
+        //cec17_test_func(x, f, _nx, _mx, _funcnum);
         f_min = f[0];
         f_max = f[0];
         f_total = f[0];
@@ -131,7 +134,7 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
             if(f_min > f[i]) {
                 f_min = f[i];
                 for (int j = 0; j < _nx; j++) {
-                    x_best[j] = x[i*_mx+j];
+                    x_best[j] = x[i*_nx+j];
                 }
             }
             if(f_max < f[i]) {
@@ -140,7 +143,7 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
             f_total += f[i];
         }
         f_ave = f_total/_mx;
-        printf("iter times: %d, fitness :%f",g, f_min);
+        printf("iter times: %d, fitness :%f\n",g, f_min);
         //(2)变异
         for (int i = 0; i < _mx; i++) {
             int p1 = get_one(_mx, i, -1, -1);
@@ -148,27 +151,28 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
             int p3 = get_one(_mx, i, p1, p2);
             double Fi = _fi(f, p1, p2, p3);
             for (int j = 0; j < _nx; j++) {
-                h[i*_mx+j] = x[p1*_mx+j] + Fi*(x[p2*_mx+j] - x[p3*_mx+j]);
+                h[i*_nx+j] = x[p1*_nx+j] + Fi*(x[p2*_nx+j] - x[p3*_nx+j]);
             }
             //(3)交叉
             double cri = _cri(f, i);
             if ((rand()%100/(double)101) <= cri) {
                 for (int j = 0; j < _nx; j++) {
-                    v[i*_mx+j] = h[i*_mx+j];
+                    v[i*_nx+j] = h[i*_nx+j];
                 }
             }
             else {
                 for (int j = 0; j < _nx; j++) {
-                    v[i*_mx+j] = x[i*_mx+j];
+                    v[i*_nx+j] = x[i*_nx+j];
                 }
             }
         }
         //(4)选择
-        cec17_test_func(v, fv, _nx, _mx, _funcnum);
+        my_test(v, fv, _nx, _mx, _funcnum);
+        //cec17_test_func(v, fv, _nx, _mx, _funcnum);
         for (int i = 0; i < _mx; i++) {
             if (fv[i] < f[i]) {
                 for (int j = 0; j < _nx; j++) {
-                    x[i*_mx+j] = v[i*_mx+j];
+                    x[i*_nx+j] = v[i*_nx+j];
                 }
             }
         }
@@ -223,3 +227,12 @@ double _cri(double *f, int i) {
     return cri;
 }
 
+void my_test(double *x, double *f, int nx, int mx, int func_num) {
+    for (int i = 0; i < mx; i++) {
+        double tmp = 0;
+        for (int j = 0; j < nx; j++) {
+            tmp += x[i*nx+j] * pow(-2, j);
+        }
+        f[i] = fabs(tmp);
+    }
+}
