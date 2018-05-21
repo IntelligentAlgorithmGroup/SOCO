@@ -10,9 +10,12 @@
 #include <math.h>
 #include <malloc.h>
 #include <random>
+#include <bits/stdc++.h>
+using namespace std;
 
 void my_test(double *, double *, int, int, int);
 void DE(double *, double *, int, int, int);
+void PSO(int);
 int get_one(int, int, int, int);
 double _fi(double *,int, int, int);
 double _cri(double *, int);
@@ -26,7 +29,7 @@ int _nx = 10;
 double x[500];*/
 double _min = -100;
 double _max = 100;
-int iter_times = 1000;
+int iter_times = 100;
 double F = 0.5;
 double h[500]; //mutate
 double cr = 0.8;
@@ -43,6 +46,20 @@ double fv[50];
 double crl = 0.1;
 double cru = 0.6;
 
+double dx[5005]; //pos
+double _f[505];	//value
+double _v[5005];	//speed
+double global_best_pos[505];
+double global_best_val;
+double local_best_pos[5005];
+double local_best_val[505];
+int dim = 2;	//dimension
+int sz = 50;	//number
+double pos_max = 10;
+double pos_min = -10;
+double v_max = 10;
+double v_min = -10;
+int times = 100;
 
 int main()
 {
@@ -50,7 +67,7 @@ int main()
 	double *f,*x;
 	FILE *fpt;
 	char FileName[30];
-	m=10;
+	m=50;
 	n=10;
 	x=(double *)malloc(m*n*sizeof(double));
 	f=(double *)malloc(sizeof(double)  *  m);
@@ -98,7 +115,9 @@ int main()
 		}*/
 		printf("target\n");
 		DE(x, f, m, n, func_num);
-		printf("end\n");
+		printf("\nthen\n");
+        srand(time(0));
+        PSO(1);
 	/*}
 	free(x);
 	free(f);
@@ -235,4 +254,50 @@ void my_test(double *x, double *f, int nx, int mx, int func_num) {
         }
         f[i] = fabs(tmp);
     }
+}
+
+void PSO(int func_num){
+	//��ʼ�� 
+	global_best_val = 1e9;
+	for(int i = 0; i < sz; i++){
+		local_best_val[i] = 1e9;
+		for(int j = 0; j < dim; j++){
+			dx[i * dim + j] = pos_min + (pos_max - pos_min) * (rand() % 1001) / 1000;
+			_v[i * dim + j] = v_min + (v_max - v_min) * (rand() % 1001) / 1000;
+		}
+	}
+	//���� 
+	for(int t = 0; t < times; t++){
+		//cec17_test_func(dx, f, dim, sz, func_num);
+		my_test(dx, _f, dim, sz, func_num);
+		//�޸ľֲ���ȫ������ֵ 
+		for(int i = 0; i < sz; i++){
+			if(local_best_val[i] > _f[i]){
+				for(int j = 0; j < dim; j++){
+					local_best_pos[i * dim + j] = dx[i * dim + j];
+				}
+				local_best_val[i] = _f[i];
+			}
+			if(global_best_val > _f[i]){
+				for(int j = 0; j < dim; j++){
+					global_best_pos[j] = dx[i * dim + j];
+				}
+				global_best_val = _f[i];
+			}
+		}
+		//�����ٶȲ��޸�����λ�� 
+		for(int i = 0; i < sz; i++){
+			for(int j = 0; j < dim; j++){
+				double local_diff = local_best_pos[i * dim + j] - dx[i * dim + j];
+				double global_diff = global_best_pos[j] - dx[i * dim + j];
+				_v[i * dim + j] += 2.0 * (rand() % 10000 / 10000.0) * local_diff + 2.0 * (rand() % 10000 / 10000.0) * global_diff;
+				dx[i * dim + j] += _v[i * dim + j];
+			}
+		}
+		printf("Times: %d, Best: %.6f\n", t, global_best_val);
+		for(int i = 0; i < dim; i++){
+			printf("%.2f, ", global_best_pos[i]);
+		}
+		puts("");
+	}
 }

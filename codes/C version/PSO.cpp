@@ -27,7 +27,7 @@ void fx(double *x, double *f, int dim, int sz, int num){
 }
 
 void PSO(int func_num){
-	//³õÊ¼»¯ 
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ 
 	global_best_val = 1e9;
 	for(int i = 0; i < sz; i++){
 		local_best_val[i] = 1e9;
@@ -36,11 +36,11 @@ void PSO(int func_num){
 			v[i * dim + j] = v_min + (v_max - v_min) * (rand() % 1001) / 1000;
 		}
 	}
-	//µü´ú 
+	//ï¿½ï¿½ï¿½ï¿½ 
 	for(int t = 0; t < times; t++){
 		//cec17_test_func(dx, f, dim, sz, func_num);
 		fx(dx, f, dim, sz, func_num);
-		//ÐÞ¸Ä¾Ö²¿¼°È«¾Ö×îÓÅÖµ 
+		//ï¿½Þ¸Ä¾Ö²ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ 
 		for(int i = 0; i < sz; i++){
 			if(local_best_val[i] > f[i]){
 				for(int j = 0; j < dim; j++){
@@ -55,7 +55,7 @@ void PSO(int func_num){
 				global_best_val = f[i];
 			}
 		}
-		//¼ÆËãËÙ¶È²¢ÐÞ¸ÄÁ£×ÓÎ»ÖÃ 
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È²ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ 
 		for(int i = 0; i < sz; i++){
 			for(int j = 0; j < dim; j++){
 				double local_diff = local_best_pos[i * dim + j] - dx[i * dim + j];
@@ -75,4 +75,5 @@ void PSO(int func_num){
 int main(){
 	srand(time(0));
 	PSO(1);
+	system("pause");
 }
