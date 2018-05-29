@@ -70,8 +70,8 @@ void asyfunc (double *, double *x, int, double);
 void oszfunc (double *, double *, int);
 void cf_cal(double *, double *, int, double *,double *,double *,double *,int);
 
-extern double *OShift,*M,*y,*z,*x_bound;
-extern int ini_flag,n_flag,func_flag,*SS;
+double *OShift,*M,*y,*z,*x_bound;
+int ini_flag,n_flag,func_flag,*SS;
 
 
 void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
@@ -114,7 +114,7 @@ void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
 		fpt = fopen(FileName,"r");
 		if (fpt==NULL)
 		{
-		    printf("\n Error: Cannot open input file for reading \n");
+		    printf("\n Error: Cannot open input file for reading func %d\n", func_num);
 		}
 		if (func_num<20)
 		{
@@ -123,7 +123,7 @@ void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
 				printf("\nError: there is insufficient memory available!\n");
 			for (i=0; i<nx*nx; i++)
 			{
-				fscanf(fpt,"%Lf",&M[i]);
+				fscanf(fpt,"%lf",&M[i]);
 			}
 		}
 		else
@@ -133,7 +133,7 @@ void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
 				printf("\nError: there is insufficient memory available!\n");
 			for (i=0; i<cf_num*nx*nx; i++)
 			{
-				fscanf(fpt,"%Lf",&M[i]);
+				fscanf(fpt,"%lf",&M[i]);
 			}
 		}
 		fclose(fpt);
@@ -153,7 +153,7 @@ void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
 			printf("\nError: there is insufficient memory available!\n");
 			for(i=0;i<nx;i++)
 			{
-				fscanf(fpt,"%Lf",&OShift[i]);
+				fscanf(fpt,"%lf",&OShift[i]);
 			}
 		}
 		else
@@ -165,13 +165,13 @@ void cec17_test_func(double *x, double *f, int nx, int mx,int func_num)
 			{
 				for (j=0;j<nx;j++)
 				{
-					fscanf(fpt,"%Lf",&OShift[i*nx+j]);
+					fscanf(fpt,"%lf",&OShift[i*nx+j]);
 				}
 				fscanf(fpt,"%*[^\n]%*c"); 
 			}
 			for (j=0;j<nx;j++)
 			{
-				fscanf(fpt,"%Lf",&OShift[(cf_num-1)*nx+j]);
+				fscanf(fpt,"%lf",&OShift[(cf_num-1)*nx+j]);
 			}
 				
 		}

@@ -1,2 +1,10 @@
-﻿  displayView.cpp
+﻿cl : 命令行 warning D9025: 正在重写“/sdl”(用“/GS-”)
+  displayView.cpp
+d:\workspace\github\soco\display\display\displayview.cpp(260): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(261): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(262): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(264): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(265): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(346): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+d:\workspace\github\soco\display\display\displayview.cpp(347): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
   display.vcxproj -> D:\Workspace\GitHub\SOCO\display\Debug\display.exe

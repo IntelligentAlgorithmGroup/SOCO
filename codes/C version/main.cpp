@@ -20,16 +20,16 @@ int get_one(int, int, int, int);
 double _fi(double *,int, int, int);
 double _cri(double *, int);
 
-void cec17_test_func(double *, double *,int,int,int);
+//void cec17_test_func(double *, double *,int,int,int);
 
 double *OShift,*M,*y,*z,*x_bound;
 int ini_flag=0,n_flag,func_flag,*SS;
 /*int _mx = 50;
 int _nx = 10;
 double x[500];*/
-double _min = -100;
-double _max = 100;
-int iter_times = 100;
+double _min = -10;
+double _max = 10;
+int iter_times = 1000;
 double F = 0.5;
 double h[500]; //mutate
 double cr = 0.8;
@@ -59,7 +59,7 @@ double pos_max = 10;
 double pos_min = -10;
 double v_max = 10;
 double v_min = -10;
-int times = 100;
+int times = 1000;
 
 int main()
 {
@@ -68,13 +68,14 @@ int main()
 	FILE *fpt;
 	char FileName[30];
 	m=50;
-	n=10;
+	n=2;
 	x=(double *)malloc(m*n*sizeof(double));
 	f=(double *)malloc(sizeof(double)  *  m);
 
-	/*for (i = 0; i < 30; i++)
+	for (i = 0; i < 10; i++)
 	{
 		func_num=i+1;
+        if(func_num == 2) continue; 
 		sprintf(FileName, "input_data/shift_data_%d.txt", func_num);
 		fpt = fopen(FileName,"r");
 		if (fpt==NULL)
@@ -89,8 +90,8 @@ int main()
 
 		for(k=0;k<n;k++)
 		{
-				fscanf(fpt,"%Lf",&x[k]);
-				//printf("%Lf\n",x[k]);
+				fscanf(fpt,"%lf",&x[k]);
+				//printf("%lf\n",x[k]);
 		}
 
 		
@@ -100,32 +101,32 @@ int main()
 			for (j = 0; j < n; j++)
 			{
 				x[1*n+j]=0.0;
-				//printf("%Lf\n",x[1*n+j]);
+				//printf("%lf\n",x[1*n+j]);
 			}
 		
 		
-		/*for (k = 0; k < 1; k++)
+		for (k = 0; k < 1; k++)
 		{
 			cec17_test_func(x, f, n,m,func_num);
 			for (j = 0; j < 2; j++)
 			{
-				//printf(" f%d(x[%d]) = %Lf,",func_num,j+1,f[j]);
+				//printf(" f%d(x[%d]) = %lf,",func_num,j+1,f[j]);
 			}
 			printf("\n");
-		}*/
+		}
 		printf("target\n");
 		DE(x, f, m, n, func_num);
 		printf("\nthen\n");
         srand(time(0));
-        PSO(1);
-	/*}
+        PSO(func_num);
+	}
 	free(x);
 	free(f);
 	free(y);
 	free(z);
 	free(M);
 	free(OShift);
-	free(x_bound);*/
+	free(x_bound);
     system("pause");
 	return 0;
 }
@@ -143,7 +144,7 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
     for (int g = 0; g < iter_times; g++) {
         my_test(x, f, _nx, _mx, _funcnum);
         //cec17_test_func(x, f, _nx, _mx, _funcnum);
-        f_min = f[0];
+        f_min = 1e9;
         f_max = f[0];
         f_total = f[0];
         for (int j = 0; j < _nx; j++) {
@@ -162,6 +163,7 @@ void DE(double *x, double *f, int _mx, int _nx, int _funcnum) {
             f_total += f[i];
         }
         f_ave = f_total/_mx;
+        if (g % 50 == 0)
         printf("iter times: %d, fitness :%f\n",g, f_min);
         //(2)变异
         for (int i = 0; i < _mx; i++) {
@@ -247,13 +249,14 @@ double _cri(double *f, int i) {
 }
 
 void my_test(double *x, double *f, int nx, int mx, int func_num) {
-    for (int i = 0; i < mx; i++) {
+    cec17_test_func(x, f, nx, mx, func_num);
+    /*for (int i = 0; i < mx; i++) {
         double tmp = 0;
         for (int j = 0; j < nx; j++) {
             tmp += x[i*nx+j] * pow(-2, j);
         }
         f[i] = fabs(tmp);
-    }
+    }*/
 }
 
 void PSO(int func_num){
@@ -290,14 +293,16 @@ void PSO(int func_num){
 			for(int j = 0; j < dim; j++){
 				double local_diff = local_best_pos[i * dim + j] - dx[i * dim + j];
 				double global_diff = global_best_pos[j] - dx[i * dim + j];
-				_v[i * dim + j] += 2.0 * (rand() % 10000 / 10000.0) * local_diff + 2.0 * (rand() % 10000 / 10000.0) * global_diff;
+				_v[i * dim + j] += 0.8 * (rand() % 10000 / 10000.0) * local_diff + 0.8 * (rand() % 10000 / 10000.0) * global_diff;
 				dx[i * dim + j] += _v[i * dim + j];
 			}
 		}
-		printf("Times: %d, Best: %.6f\n", t, global_best_val);
-		for(int i = 0; i < dim; i++){
-			printf("%.2f, ", global_best_pos[i]);
-		}
+        if (t % 50 == 0) {
+		printf("Times: %d, Best: %.6f", t, global_best_val);
+		//for(int i = 0; i < dim; i++){
+			//printf("%.2f, ", global_best_pos[i]);
+		//}
 		puts("");
+        }
 	}
 }
